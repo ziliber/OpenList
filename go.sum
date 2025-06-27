@@ -661,6 +661,8 @@ github.com/yusufpapurcu/wmi v1.2.4 h1:zFUKzehAFReQwLys1b/iSMl+JQGSCSjtVqQn9bBrPo
 github.com/yusufpapurcu/wmi v1.2.4/go.mod h1:SBZ9tNy3G9/m5Oi98Zks0QjeHVDvuK0qfxQmPyzfmi0=
 github.com/zzzhr1990/go-common-entity v0.0.0-20221216044934-fd1c571e3a22 h1:X+lHsNTlbatQ1cErXIbtyrh+3MTWxqQFS+sBP/wpFXo=
 github.com/zzzhr1990/go-common-entity v0.0.0-20221216044934-fd1c571e3a22/go.mod h1:1zGRDJd8zlG6P8azG96+uywfh6udYWwhOmUivw+xsuM=
+github.com/zzzhr1990/go-common-entity v0.0.0-20250202070650-1a200048f0d3 h1:PSRwrE5QBufPnOjdgIkRs5KBV1Avq3SY8oksj2Z+k3o=
+github.com/zzzhr1990/go-common-entity v0.0.0-20250202070650-1a200048f0d3/go.mod h1:CKriYB8bkNgSbYUQF1khSpejKb5IsV6cR7MdaAR7Fc0=
 go.etcd.io/bbolt v1.3.8 h1:xs88BrvEv273UsB79e0hcVrlUWmS0a8upikMFhSyAtA=
 go.etcd.io/bbolt v1.3.8/go.mod h1:N9Mkw9X8x5fupy0IKsmuqVtoGDyxsaDlbk4Rd05IAQw=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
