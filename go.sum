@@ -225,6 +225,8 @@ github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f h1:Y/CXytFA4m6
 github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f/go.mod h1:vw97MGsxSvLiUE2X8qFplwetxpGLQrlU1Q9AUEIzCaM=
 github.com/fclairamb/ftpserverlib v0.26.1-0.20250611192536-99cb646d0bbe h1:7hWzlndXJKF95RsWQ80bZmdPiBhoTIzedrp/VDGons8=
 github.com/fclairamb/ftpserverlib v0.26.1-0.20250611192536-99cb646d0bbe/go.mod h1:xaDvN9bHSdKbmM1oXkqpyyYM39S89uR2blbq571Zb00=
+github.com/fclairamb/ftpserverlib v0.26.1-0.20250615212502-7accbe1c7aad h1:nX84X0BDMl4qHx03uSdaVN/9mpHMc7f2jODjPLgDkAA=
+github.com/fclairamb/ftpserverlib v0.26.1-0.20250615212502-7accbe1c7aad/go.mod h1:xaDvN9bHSdKbmM1oXkqpyyYM39S89uR2blbq571Zb00=
 github.com/fclairamb/go-log v0.6.0 h1:1V7BJ75P2PvanLHRyGBBFjncB6d4AgEmu+BPWKbMkaU=
 github.com/fclairamb/go-log v0.6.0/go.mod h1:cyXxOw4aJwO6lrZb8GRELSw+sxO6wwkLJdsjY5xYCWA=
 github.com/felixge/httpsnoop v1.0.4 h1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=
