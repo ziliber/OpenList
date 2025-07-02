@@ -112,18 +112,10 @@ func (d *Strm) List(ctx context.Context, dir model.Obj, args model.ListArgs) ([]
 }
 
 func (d *Strm) Link(ctx context.Context, file model.Obj, args model.LinkArgs) (*model.Link, error) {
-	root, sub := d.getRootAndPath(file.GetPath())
-	dsts, ok := d.pathMap[root]
-	if !ok {
-		return nil, errs.ObjectNotFound
-	}
-	for _, dst := range dsts {
-		link, err := d.link(ctx, dst, sub)
-		if err == nil {
-			return link, nil
-		}
-	}
-	return nil, errs.ObjectNotFound
+	link := d.getLink(ctx, file.GetPath())
+	return &model.Link{
+		MFile: model.NewNopMFile(strings.NewReader(link)),
+	}, nil
 }
 
 func (d *Strm) MakeDir(ctx context.Context, parentDir model.Obj, dirName string) error {
@@ -148,26 +140,6 @@ func (d *Strm) Remove(ctx context.Context, obj model.Obj) error {
 
 func (d *Strm) Put(ctx context.Context, dstDir model.Obj, s model.FileStreamer, up driver.UpdateProgress) error {
 	return errors.New("strm Driver cannot put file")
-}
-
-func (d *Strm) PutURL(ctx context.Context, dstDir model.Obj, name, url string) error {
-	return errors.New("strm Driver cannot put file")
-}
-
-func (d *Strm) GetArchiveMeta(ctx context.Context, obj model.Obj, args model.ArchiveArgs) (model.ArchiveMeta, error) {
-	return nil, errs.NotImplement
-}
-
-func (d *Strm) ListArchive(ctx context.Context, obj model.Obj, args model.ArchiveInnerArgs) ([]model.Obj, error) {
-	return nil, errs.NotImplement
-}
-
-func (d *Strm) Extract(ctx context.Context, obj model.Obj, args model.ArchiveInnerArgs) (*model.Link, error) {
-	return nil, errs.NotImplement
-}
-
-func (d *Strm) ArchiveDecompress(ctx context.Context, srcObj, dstDir model.Obj, args model.ArchiveDecompressArgs) error {
-	return errs.NotImplement
 }
 
 var _ driver.Driver = (*Strm)(nil)
