@@ -47,10 +47,12 @@ jobs:
         with:
           script: |
             const title = context.payload.pull_request.title || "";
-            const ok = /^(feat|docs|fix|style|refactor|chore)\(.+\): /i.test(title);
+            const ok = /^(feat|docs|fix|style|refactor|chore)\(.+?\): /i.test(title);
             if (!ok) {
-              let comment = "⚠️ PR 标题需以 `feat(): `, `docs(): `, `fix(): `, `style(): `, `refactor(): ` 其中之一开头，例如：`feat(component): 新增功能`。";
-              comment += "⚠️ The PR title must start with `feat(): `, `docs(): `, `fix(): `, `style(): `, or `refactor(): `. For example: `feat(component): add new feature`.\n\n";
+              let comment = "⚠️ PR 标题需以 `feat(): `, `docs(): `, `fix(): `, `style(): `, `refactor(): `, `chore(): ` 其中之一开头，例如：`feat(component): 新增功能`。\n";
+              comment += "⚠️ The PR title must start with `feat(): `, `docs(): `, `fix(): `, `style(): `, or `refactor(): `, `chore(): `. For example: `feat(component): add new feature`.\n\n";
+              comment += "如果跨多个组件，请使用主要组件作为前缀，并在标题中枚举、描述中说明。\n";
+              comment += "If it spans multiple components, use the main component as the prefix and enumerate in the title, describe in the body.\n\n";
               await github.rest.issues.createComment({
                 ...context.repo,
                 issue_number: context.issue.number,
