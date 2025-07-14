@@ -73,7 +73,7 @@ func attachHeader(w http.ResponseWriter, file model.Obj, header http.Header) {
 func GetEtag(file model.Obj) string {
 	hash := ""
 	for _, v := range file.GetHash().Export() {
-		if strings.Compare(v, hash) > 0 {
+		if v > hash {
 			hash = v
 		}
 	}
