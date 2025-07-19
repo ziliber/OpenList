@@ -52,9 +52,10 @@ jobs:
             github.com/OpenListTeam/OpenList/v4/internal/conf.GitCommit=$git_commit
             github.com/OpenListTeam/OpenList/v4/internal/conf.Version=$tag
             github.com/OpenListTeam/OpenList/v4/internal/conf.WebVersion=dev
+          output: openlist$ext
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: openlist_${{ env.SHA }}_${{ matrix.target }}
+          name: openlist_${{ steps.short-sha.outputs.sha }}_${{ matrix.target }}
           path: build/*
