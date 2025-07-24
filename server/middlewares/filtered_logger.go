@@ -44,24 +44,6 @@ func FilteredLoggerWithConfig(config FilteredLoggerConfig) gin.HandlerFunc {
 	})
 }
 
-// FilteredLogger returns a gin.HandlerFunc (middleware) that logs requests
-// but filters out health check and PROPFIND requests
-func FilteredLogger() gin.HandlerFunc {
-	config := FilteredLoggerConfig{
-		SkipPaths: []string{
-			"/ping",
-		},
-		SkipMethods: []string{
-			"HEAD", // Skip HEAD requests for health checks
-		},
-		SkipPathPrefixes: []string{
-			"/dav/", // Skip WebDAV PROPFIND requests
-		},
-		Output: log.StandardLogger().Out,
-	}
-
-	return FilteredLoggerWithConfig(config)
-}
 
 // shouldSkipLogging determines if a request should be skipped from logging
 func shouldSkipLogging(path, method string, config FilteredLoggerConfig) bool {
