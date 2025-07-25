@@ -11,7 +11,6 @@ import (
 	"github.com/OpenListTeam/OpenList/v4/internal/model"
 	"github.com/OpenListTeam/OpenList/v4/internal/op"
 	"github.com/OpenListTeam/OpenList/v4/pkg/generic"
-	"github.com/OpenListTeam/OpenList/v4/pkg/utils"
 	"github.com/OpenListTeam/OpenList/v4/server/common"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
@@ -174,7 +173,7 @@ func FsBatchRename(c *gin.Context) {
 		if renameObject.SrcName == "" || renameObject.NewName == "" {
 			continue
 		}
-		renameObject.NewName, err = utils.CheckRelativePath(renameObject.NewName)
+		err = checkRelativePath(renameObject.NewName)
 		if err != nil {
 			common.ErrorResp(c, err, 403)
 			return
@@ -235,7 +234,8 @@ func FsRegexRename(c *gin.Context) {
 
 	for _, file := range files {
 		if srcRegexp.MatchString(file.GetName()) {
-			newFileName, err := utils.CheckRelativePath(srcRegexp.ReplaceAllString(file.GetName(), req.NewNameRegex))
+			newFileName := srcRegexp.ReplaceAllString(file.GetName(), req.NewNameRegex)
+			err := checkRelativePath(newFileName)
 			if err != nil {
 				common.ErrorResp(c, err, 403)
 				return
