@@ -38,38 +38,24 @@ type Scheme struct {
 }
 
 type LogConfig struct {
-	Enable     bool   `json:"enable" env:"LOG_ENABLE"`
-	Name       string `json:"name" env:"LOG_NAME"`
-	MaxSize    int    `json:"max_size" env:"MAX_SIZE"`
-	MaxBackups int    `json:"max_backups" env:"MAX_BACKUPS"`
-	MaxAge     int    `json:"max_age" env:"MAX_AGE"`
-	Compress   bool   `json:"compress" env:"COMPRESS"`
-	Filter     LogFilterConfig `json:"filter"` // Log filtering configuration (config file only, no env support)
+	Enable     bool            `json:"enable" env:"ENABLE"`
+	Name       string          `json:"name" env:"NAME"`
+	MaxSize    int             `json:"max_size" env:"MAX_SIZE"`
+	MaxBackups int             `json:"max_backups" env:"MAX_BACKUPS"`
+	MaxAge     int             `json:"max_age" env:"MAX_AGE"`
+	Compress   bool            `json:"compress" env:"COMPRESS"`
+	Filter     LogFilterConfig `json:"filter" envPrefix:"FILTER_"`
 }
 
-// LogFilterConfig holds configuration for log filtering
-// Note: This configuration is only supported via config file, not environment variables
 type LogFilterConfig struct {
-	// EnableFiltering controls whether log filtering is enabled
-	EnableFiltering bool `json:"enable_filtering"`
-	
-	// FilterHealthChecks controls whether to filter health check requests
-	FilterHealthChecks bool `json:"filter_health_checks"`
-	
-	// FilterWebDAV controls whether to filter WebDAV requests (only for HTTP server)
-	FilterWebDAV bool `json:"filter_webdav"`
-	
-	// FilterHEADRequests controls whether to filter HEAD requests
-	FilterHEADRequests bool `json:"filter_head_requests"`
-	
-	// CustomSkipPaths allows adding custom paths to skip
-	CustomSkipPaths []string `json:"custom_skip_paths"`
-	
-	// CustomSkipMethods allows adding custom methods to skip
-	CustomSkipMethods []string `json:"custom_skip_methods"`
-	
-	// CustomSkipPrefixes allows adding custom path prefixes to skip
-	CustomSkipPrefixes []string `json:"custom_skip_prefixes"`
+	Enable  bool     `json:"enable" env:"ENABLE"`
+	Filters []Filter `json:"filters"`
+}
+
+type Filter struct {
+	CIDR   string `json:"cidr"`
+	Path   string `json:"path"`
+	Method string `json:"method"`
 }
 
 type TaskConfig struct {
@@ -131,7 +117,7 @@ type Config struct {
 	TempDir               string      `json:"temp_dir" env:"TEMP_DIR"`
 	BleveDir              string      `json:"bleve_dir" env:"BLEVE_DIR"`
 	DistDir               string      `json:"dist_dir"`
-	Log                   LogConfig   `json:"log"`
+	Log                   LogConfig   `json:"log" envPrefix:"LOG_"`
 	DelayedStart          int         `json:"delayed_start" env:"DELAYED_START"`
 	MaxConnections        int         `json:"max_connections" env:"MAX_CONNECTIONS"`
 	MaxConcurrency        int         `json:"max_concurrency" env:"MAX_CONCURRENCY"`
@@ -179,13 +165,12 @@ func DefaultConfig(dataDir string) *Config {
 			MaxBackups: 30,
 			MaxAge:     28,
 			Filter: LogFilterConfig{
-				EnableFiltering:    true,
-				FilterHealthChecks: true,
-				FilterWebDAV:       true,
-				FilterHEADRequests: true,
-				CustomSkipPaths:    []string{},
-				CustomSkipMethods:  []string{},
-				CustomSkipPrefixes: []string{},
+				Enable: false,
+				Filters: []Filter{
+					{Path: "/ping"},
+					{Method: "HEAD"},
+					{Path: "/dav/", Method: "PROPFIND"},
+				},
 			},
 		},
 		MaxConnections:        0,
