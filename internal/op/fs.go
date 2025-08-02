@@ -295,6 +295,7 @@ func Link(ctx context.Context, storage driver.Driver, path string, args model.Li
 	fn := func() (*model.Link, error) {
 		link, err := storage.Link(ctx, file, args)
 		if err != nil {
+			linkG.Forget(key)
 			return nil, errors.Wrapf(err, "failed get link")
 		}
 		if link.Expiration != nil {
