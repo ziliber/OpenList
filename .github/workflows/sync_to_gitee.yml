@@ -14,10 +14,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
-      - name: Mirror to Gitee
-        uses: pixta-dev/repository-mirroring-action@v1
-        with:
-          target_repo_url: ${{ vars.GITEE_REPO_URL }}
-          ssh_private_key: ${{ secrets.GITEE_SSH_PRIVATE_KEY }}
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GITEE_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan gitee.com >> ~/.ssh/known_hosts
+
+      - name: Push to Gitee
+        run: |
+          git remote add gitee ${{ vars.GITEE_REPO_URL }}
+          git push --force gitee main:main
