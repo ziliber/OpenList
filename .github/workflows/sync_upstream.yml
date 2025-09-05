@@ -10,6 +10,8 @@ jobs:
   sync_latest_from_upstream:
     runs-on: ubuntu-latest
     name: Sync latest commits from upstream repo
+    permissions:
+      contents: write
 
     steps:
       # REQUIRED step
@@ -21,6 +23,8 @@ jobs:
 
       - name: Merge upstream changes
         run: |
+          git config --global user.email "git[bot]@github.com"
+          git config --global user.name "git[bot]"
           git remote add upstream https://github.com/OpenListTeam/OpenList.git
           git fetch upstream
           git merge --no-edit upstream/main
