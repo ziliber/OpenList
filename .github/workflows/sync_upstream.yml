@@ -59,7 +59,7 @@ jobs:
           echo "Latest upstream tag: $LATEST_UPSTREAM_TAG"
 
           # 检查当前仓库是否已经有这个tag
-          if git ls-remote --tags upstream | grep -q "refs/tags/$LATEST_UPSTREAM_TAG$"; then
+          if git ls-remote --tags origin | grep -q "refs/tags/$LATEST_UPSTREAM_TAG$"; then
             echo "Tag $LATEST_UPSTREAM_TAG already exists in current repository"
             exit 0
           fi
