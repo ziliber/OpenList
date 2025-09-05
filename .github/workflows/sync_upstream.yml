@@ -36,6 +36,7 @@ jobs:
     name: Sync latest tag from upstream repo
     permissions:
       contents: write
+      workflows: write
 
     steps:
       - name: Checkout target repo
