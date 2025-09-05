@@ -69,12 +69,18 @@ jobs:
 
           # 检查当前仓库是否有这个commit
           if git cat-file -e "$TAG_COMMIT" 2>/dev/null; then
+            # 检查当前仓库是否已经有这个tag
+            if git ls-remote origin "refs/tags/$LATEST_UPSTREAM_TAG" | grep -q "$LATEST_UPSTREAM_TAG"; then
+              echo "Tag $LATEST_UPSTREAM_TAG already exists in current repository"
+              exit 0
+            fi
+            
             # 创建新tag
             git tag "$LATEST_UPSTREAM_TAG" "$TAG_COMMIT"
             git push origin "$LATEST_UPSTREAM_TAG"
             echo "Successfully created and pushed tag: $LATEST_UPSTREAM_TAG"
           else
             echo "Commit $TAG_COMMIT for tag $LATEST_UPSTREAM_TAG not found in current repository"
-            echo "Please sync commits first before syncing tags"
-            exit 1
+            echo "Tag will be created after the next commit sync"
+            exit 0
           fi
