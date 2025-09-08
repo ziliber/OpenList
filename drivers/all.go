@@ -58,6 +58,7 @@ import (
 	_ "github.com/OpenListTeam/OpenList/v4/drivers/s3"
 	_ "github.com/OpenListTeam/OpenList/v4/drivers/seafile"
 	_ "github.com/OpenListTeam/OpenList/v4/drivers/sftp"
+	_ "github.com/OpenListTeam/OpenList/v4/drivers/shadow"
 	_ "github.com/OpenListTeam/OpenList/v4/drivers/smb"
 	_ "github.com/OpenListTeam/OpenList/v4/drivers/strm"
 	_ "github.com/OpenListTeam/OpenList/v4/drivers/teambition"
@@ -78,5 +79,4 @@ import (
 // All do nothing,just for import
 // same as _ import
 func All() {
-
 }
