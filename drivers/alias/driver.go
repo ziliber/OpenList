@@ -130,7 +130,7 @@ func (d *Alias) Get(ctx context.Context, path string) (model.Obj, error) {
 func (d *Alias) List(ctx context.Context, dir model.Obj, args model.ListArgs) ([]model.Obj, error) {
 	path := dir.GetPath()
 	if utils.PathEqual(path, "/") && !d.autoFlatten {
-		return d.listRoot(ctx, args.WithStorageDetails && d.DetailsPassThrough), nil
+		return d.listRoot(ctx, args.WithStorageDetails && d.DetailsPassThrough, args.Refresh), nil
 	}
 	root, sub := d.getRootAndPath(path)
 	dsts, ok := d.pathMap[root]
@@ -210,9 +210,6 @@ func (d *Alias) Link(ctx context.Context, file model.Obj, args model.LinkArgs) (
 
 		if resultLink.ContentLength == 0 {
 			resultLink.ContentLength = fi.GetSize()
-		}
-		if resultLink.MFile != nil {
-			return &resultLink, nil
 		}
 		if d.DownloadConcurrency > 0 {
 			resultLink.Concurrency = d.DownloadConcurrency
