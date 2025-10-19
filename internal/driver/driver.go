@@ -213,3 +213,8 @@ type WithDetails interface {
 type Reference interface {
 	InitReference(storage Driver) error
 }
+
+type LinkCacheModeResolver interface {
+	// ResolveLinkCacheMode returns the LinkCacheMode for the given path.
+	ResolveLinkCacheMode(path string) LinkCacheMode
+}

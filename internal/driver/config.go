@@ -17,11 +17,23 @@ type Config struct {
 	ProxyRangeOption  bool `json:"-"`
 	// if the driver returns Link without URL, this should be set to true
 	NoLinkURL bool `json:"-"`
-	// LinkCacheType=1 add IP to cache key
-	//
-	// LinkCacheType=2 add UserAgent to cache key
-	LinkCacheType uint8 `json:"-"`
+	// Link cache behaviour:
+	//  - LinkCacheAuto: let driver decide per-path (implement driver.LinkCacheModeResolver)
+	//  - LinkCacheNone: no extra info added to cache key (default)
+	//  - flags (OR-able) can add more attributes to cache key (IP, UA, ...)
+	LinkCacheMode `json:"-"`
 }
+type LinkCacheMode int8
+
+const (
+	LinkCacheAuto LinkCacheMode = -1 // Let the driver decide per-path (use driver.LinkCacheModeResolver)
+	LinkCacheNone LinkCacheMode = 0  // No extra info added to cache key (default)
+)
+
+const (
+	LinkCacheIP LinkCacheMode = 1 << iota // include client IP in cache key
+	LinkCacheUA                           // include User-Agent in cache key
+)
 
 func (c Config) MustProxy() bool {
 	return c.OnlyProxy || c.NoLinkURL

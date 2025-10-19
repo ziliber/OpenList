@@ -168,23 +168,19 @@ func Link(ctx context.Context, storage driver.Driver, path string, args model.Li
 		return nil, nil, errors.WithMessagef(errs.StorageNotInit, "storage status: %s", storage.GetStorage().Status)
 	}
 
-	typeKey := args.Type
-	var typeKeys []string
-	switch storage.Config().LinkCacheType {
-	case 1:
-		if args.IP != "" {
-			typeKey += "/" + args.IP
-			typeKeys = []string{typeKey}
-		}
-	case 2:
-		if ua := args.Header.Get("User-Agent"); ua != "" {
-			typeKey += "/" + ua
-			typeKeys = []string{typeKey}
-		}
+	mode := storage.Config().LinkCacheMode
+	if mode == -1 {
+		mode = storage.(driver.LinkCacheModeResolver).ResolveLinkCacheMode(path)
 	}
-
+	typeKey := args.Type
+	if mode&driver.LinkCacheIP == 1 {
+		typeKey += "/" + args.IP
+	}
+	if mode&driver.LinkCacheUA == 1 {
+		typeKey += "/" + args.Header.Get("User-Agent")
+	}
 	key := Key(storage, path)
-	if ol, exists := Cache.linkCache.GetType(key, args.Type, typeKeys...); exists {
+	if ol, exists := Cache.linkCache.GetType(key, typeKey); exists {
 		if ol.link.Expiration != nil ||
 			ol.link.SyncClosers.AcquireReference() || !ol.link.RequireReference {
 			return ol.link, ol.obj, nil
