@@ -227,20 +227,23 @@ func Link(ctx context.Context, storage driver.Driver, path string, args model.Li
 }
 
 // Other api
-func Other(ctx context.Context, storage driver.Driver, args model.FsOtherArgs) (interface{}, error) {
+func Other(ctx context.Context, storage driver.Driver, args model.FsOtherArgs) (any, error) {
+	if storage.Config().CheckStatus && storage.GetStorage().Status != WORK {
+		return nil, errors.WithMessagef(errs.StorageNotInit, "storage status: %s", storage.GetStorage().Status)
+	}
+	o, ok := storage.(driver.Other)
+	if !ok {
+		return nil, errs.NotImplement
+	}
 	obj, err := GetUnwrap(ctx, storage, args.Path)
 	if err != nil {
 		return nil, errors.WithMessagef(err, "failed to get obj")
 	}
-	if o, ok := storage.(driver.Other); ok {
-		return o.Other(ctx, model.OtherArgs{
-			Obj:    obj,
-			Method: args.Method,
-			Data:   args.Data,
-		})
-	} else {
-		return nil, errs.NotImplement
-	}
+	return o.Other(ctx, model.OtherArgs{
+		Obj:    obj,
+		Method: args.Method,
+		Data:   args.Data,
+	})
 }
 
 var mkdirG singleflight.Group[any]
@@ -309,6 +312,9 @@ func Move(ctx context.Context, storage driver.Driver, srcPath, dstDirPath string
 		return errors.WithMessagef(errs.StorageNotInit, "storage status: %s", storage.GetStorage().Status)
 	}
 	srcPath = utils.FixAndCleanPath(srcPath)
+	if utils.PathEqual(srcPath, "/") {
+		return errors.New("move root folder is not allowed")
+	}
 	srcDirPath := stdpath.Dir(srcPath)
 	dstDirPath = utils.FixAndCleanPath(dstDirPath)
 	if dstDirPath == srcDirPath {
@@ -371,6 +377,9 @@ func Rename(ctx context.Context, storage driver.Driver, srcPath, dstName string,
 		return errors.WithMessagef(errs.StorageNotInit, "storage status: %s", storage.GetStorage().Status)
 	}
 	srcPath = utils.FixAndCleanPath(srcPath)
+	if utils.PathEqual(srcPath, "/") {
+		return errors.New("rename root folder is not allowed")
+	}
 	srcRawObj, err := Get(ctx, storage, srcPath)
 	if err != nil {
 		return errors.WithMessage(err, "failed to get src object")
@@ -471,10 +480,10 @@ func Remove(ctx context.Context, storage driver.Driver, path string) error {
 	if storage.Config().CheckStatus && storage.GetStorage().Status != WORK {
 		return errors.WithMessagef(errs.StorageNotInit, "storage status: %s", storage.GetStorage().Status)
 	}
-	if utils.PathEqual(path, "/") {
-		return errors.New("delete root folder is not allowed, please goto the manage page to delete the storage instead")
-	}
 	path = utils.FixAndCleanPath(path)
+	if utils.PathEqual(path, "/") {
+		return errors.New("delete root folder is not allowed")
+	}
 	rawObj, err := Get(ctx, storage, path)
 	if err != nil {
 		// if object not found, it's ok
