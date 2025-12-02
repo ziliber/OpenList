@@ -73,14 +73,11 @@ func (d *Alias) Drop(ctx context.Context) error {
 	return nil
 }
 
+func (Addition) GetRootPath() string {
+	return "/"
+}
+
 func (d *Alias) Get(ctx context.Context, path string) (model.Obj, error) {
-	if utils.PathEqual(path, "/") {
-		return &model.Object{
-			Name:     "Root",
-			IsFolder: true,
-			Path:     "/",
-		}, nil
-	}
 	root, sub := d.getRootAndPath(path)
 	dsts, ok := d.pathMap[root]
 	if !ok {
@@ -148,6 +145,7 @@ func (d *Alias) List(ctx context.Context, dir model.Obj, args model.ListArgs) ([
 			tmp, err = utils.SliceConvert(tmp, func(obj model.Obj) (model.Obj, error) {
 				objRes := model.Object{
 					Name:     obj.GetName(),
+					Path:     stdpath.Join(path, obj.GetName()),
 					Size:     obj.GetSize(),
 					Modified: obj.ModTime(),
 					IsFolder: obj.IsDir(),
